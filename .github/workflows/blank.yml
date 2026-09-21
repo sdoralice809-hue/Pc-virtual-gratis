@@ -1,83 +1,52 @@
 name: PC Virtual
-
-on:
-  workflow_dispatch:
-    inputs:
-      access_password:
-        description: "Senha do PC virtual"
-        required: true
-        default: "123456"
-
-jobs:
-  pc-virtual:
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Configurar senha
-        run: |
-          echo "runner:${{ github.event.inputs.access_password }}" | sudo chpasswd
-
-      - name: Instalar XFCE e VNC
-        run: |
-          sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-            xfce4 xfce4-goodies tigervnc-standalone-server curl
-
-      - name: Configurar VNC
-        run: |
-          mkdir -p ~/.vnc
-
-          printf '%s\n' "${{ github.event.inputs.access_password }}" \
-            | vncpasswd -f > ~/.vnc/passwd
-
-          chmod 600 ~/.vnc/passwd
-
-          cat > ~/.vnc/xstartup <<'EOF'
-          #!/bin/sh
-          unset SESSION_MANAGER
-          unset DBUS_SESSION_BUS_ADDRESS
-          startxfce4 &
-          EOF
-
-          chmod +x ~/.vnc/xstartup
-
-      - name: Instalar Ngrok
-        run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
-            | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-
-          echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" \
-            | sudo tee /etc/apt/sources.list.d/ngrok.list
-
-          sudo apt-get update
-          sudo apt-get install -y ngrok
-
-      - name: Configurar Ngrok
-        env:
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-        run: |
-          ngrok config add-authtoken "$NGROK_AUTHTOKEN"
-
-      - name: Iniciar VNC
-        run: |
-          vncserver :1 -geometry 1280x720 -depth 24
-          sleep 3
-
-      - name: Criar túnel
-        run: |
-          nohup ngrok tcp 5901 > /tmp/ngrok.log 2>&1 &
-          sleep 8
-
-          echo "===== ENDEREÇO DO PC VIRTUAL ====="
-          curl -s http://127.0.0.1:4040/api/tunnels
-          echo ""
-          echo "==================================="
-
-      - name: Manter PC online
-        run: |
-          echo "PC Virtual Online"
-          sleep 21000
+ on:
+   workflow_dispatch:  # Permite acionar manualmente
+ jobs:
+   executar-pc-virtual:
+     runs-on: ubuntu-latest
+     
+     steps:
+       - name: Baixar código do repositório
+         uses: actions/checkout@v4
+       - name: Instalar Python
+         uses: actions/setup-python@v5
+         with:
+           python-version: '3.11'
+       - name: Criar arquivo da Máquina Virtual
+         run: |
+           cat > maquina_virtual.py << 'EOF'
+           class MaquinaVirtual:
+               def __init__(self, nome, memoria_gb, armazenamento_gb, sistema_operacional):
+                   self.nome = nome
+                   self.memoria = memoria_gb
+                   self.armazenamento_total = armazenamento_gb
+                   self.armazenamento_usado = 0
+                   self.so = sistema_operacional
+                   self.ligada = False
+                   self.processos = []
+               def ligar(self):
+                   if not self.ligada:
+                       self.ligada = True
+                       print(f"✅ {self.nome} ligada! SO: {self.so}")
+                   else:
+                       print(f"ℹ️ {self.nome} já está ligada.")
+               def desligar(self):
+                   if self.ligada:
+                       self.ligada = False
+                       self.processos.clear()
+                       print(f"🔌 {self.nome} desligada.")
+               def status(self):
+                   print(f"\n📊 Status — {self.nome}")
+                   print(f"Estado: {'LIGADA ✅' if self.ligada else 'DESLIGADA 🔌'}")
+                   print(f"Memória: {sum(p['memoria'] for p in self.processos)}/{self.memoria} GB")
+                   print(f"Armazenamento: {self.armazenamento_usado}/{self.armazenamento_total} GB")
+           if __name__ == "__main__":
+               pc = MaquinaVirtual("PC-Virtual-01", 8, 256, "Linux Ubuntu 22.04")
+               pc.status()
+               pc.ligar()
+               pc.status()
+               pc.desligar()
+               pc.status()
+           EOF
+       - name: Executar a Máquina Virtual
+         run: python maquina_virtual.py
