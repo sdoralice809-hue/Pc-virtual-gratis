@@ -3,16 +3,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  teste:
+  sistema:
     runs-on: ubuntu-latest
     steps:
-      - name: Meu PC Virtual
+      - name: Área de Trabalho
         run: |
-          echo "================================"
-          echo "✅ PC-Virtual-01 LIGADA!"
-          echo "💻 Sistema: Ubuntu 22.04"
-          echo "🧠 Memória: 8 GB RAM"
-          echo "💾 Armazenamento: 256 GB"
-          echo "================================"
-          echo "🎉 FUNCIONOU PERFEITAMENTE!"
-          echo "================================"
+          echo "========================================="
+          echo "      WINDOWS VIRTUAL — VERSÃO GRATUITA"
+          echo "========================================="
+          echo ""
+          echo "  [Iniciar]  📁 Arquivos  🌐 Navegador"
+          echo ""
+          echo "  💻 Computador: PC-Virtual-01"
+          echo "  🧠 Memória:    8 GB RAM"
+          echo "  💾 Disco:      256 GB"
+          echo "  🖥️ Sistema:    Windows 11 Simulado"
+          echo "  🔌 Status:     ✅ LIGADO"
+          echo ""
+          echo "  📂 Arquivos:"
+          echo "     ├─ 📁 Documentos"
+          echo "     ├─ 📁 Imagens"
+          echo "     └─ 📄 Notas.txt"
+          echo ""
+          echo "========================================="
+          echo "      ✅ Tudo funcionando! Grátis! 🎉"
+          echo "========================================="
+          
