@@ -5,11 +5,10 @@ name: PC Virtual
    teste:
      runs-on: ubuntu-latest
      steps:
-       - name: Rodar PC Virtual
+       - name: Mostrar PC Virtual
          run: |
-           echo "✅ PC-Virtual-01 LIGADA com sucesso!"
+           echo "✅ PC-Virtual-01 LIGADA"
            echo "💻 Sistema: Ubuntu 22.04"
            echo "🧠 RAM: 8 GB"
            echo "💾 Disco: 256 GB"
-           echo "🎉 Tudo funcionando PERFEITAMENTE!"
-           echo "🔌 PC-Virtual-01 DESLIGADA"
+           echo "🎉 FUNCIONOU!"
