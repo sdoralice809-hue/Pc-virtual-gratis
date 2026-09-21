@@ -1,38 +1,19 @@
 name: PC Virtual
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
-  teste:
+  rodar:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Rodar PC Virtual
+      - name: Exibir mensagem da Máquina Virtual
         run: |
-          python3 -c "
-class MaquinaVirtual:
-    def __init__(self):
-        self.nome = 'PC-Virtual-01'
-        self.ram = 8
-        self.disco = 256
-        self.so = 'Ubuntu 22.04'
-        self.ligada = False
-
-    def ligar(self):
-        self.ligada = True
-        print('✅', self.nome, 'LIGADA com sucesso!')
-        print('💻 Sistema:', self.so)
-        print('🧠 RAM:', self.ram, 'GB')
-        print('💾 Disco:', self.disco, 'GB')
-
-    def desligar(self):
-        self.ligada = False
-        print('🔌', self.nome, 'DESLIGADA')
-
-pc = MaquinaVirtual()
-pc.ligar()
-print('🎉 Tudo funcionando PERFEITAMENTE!')
-pc.desligar()
-          "
+          echo "✅ PC-Virtual-01 LIGADA com sucesso!"
+          echo "💻 Sistema: Ubuntu 22.04"
+          echo "🧠 RAM: 8 GB"
+          echo "💾 Disco: 256 GB"
+          echo "🎉 Tudo funcionando PERFEITAMENTE!"
+          echo "🔌 PC-Virtual-01 DESLIGADA"
+          
           
