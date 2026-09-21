@@ -1,52 +1,38 @@
 name: PC Virtual
- on:
-   workflow_dispatch:  # Permite acionar manualmente
- jobs:
-   executar-pc-virtual:
-     runs-on: ubuntu-latest
-     
-     steps:
-       - name: Baixar código do repositório
-         uses: actions/checkout@v4
-       - name: Instalar Python
-         uses: actions/setup-python@v5
-         with:
-           python-version: '3.11'
-       - name: Criar arquivo da Máquina Virtual
-         run: |
-           cat > maquina_virtual.py << 'EOF'
-           class MaquinaVirtual:
-               def __init__(self, nome, memoria_gb, armazenamento_gb, sistema_operacional):
-                   self.nome = nome
-                   self.memoria = memoria_gb
-                   self.armazenamento_total = armazenamento_gb
-                   self.armazenamento_usado = 0
-                   self.so = sistema_operacional
-                   self.ligada = False
-                   self.processos = []
-               def ligar(self):
-                   if not self.ligada:
-                       self.ligada = True
-                       print(f"✅ {self.nome} ligada! SO: {self.so}")
-                   else:
-                       print(f"ℹ️ {self.nome} já está ligada.")
-               def desligar(self):
-                   if self.ligada:
-                       self.ligada = False
-                       self.processos.clear()
-                       print(f"🔌 {self.nome} desligada.")
-               def status(self):
-                   print(f"\n📊 Status — {self.nome}")
-                   print(f"Estado: {'LIGADA ✅' if self.ligada else 'DESLIGADA 🔌'}")
-                   print(f"Memória: {sum(p['memoria'] for p in self.processos)}/{self.memoria} GB")
-                   print(f"Armazenamento: {self.armazenamento_usado}/{self.armazenamento_total} GB")
-           if __name__ == "__main__":
-               pc = MaquinaVirtual("PC-Virtual-01", 8, 256, "Linux Ubuntu 22.04")
-               pc.status()
-               pc.ligar()
-               pc.status()
-               pc.desligar()
-               pc.status()
-           EOF
-       - name: Executar a Máquina Virtual
-         run: python maquina_virtual.py
+on:
+  workflow_dispatch:
+
+jobs:
+  teste:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rodar PC Virtual
+        run: |
+          python3 -c "
+class MaquinaVirtual:
+    def __init__(self):
+        self.nome = 'PC-Virtual-01'
+        self.ram = 8
+        self.disco = 256
+        self.so = 'Ubuntu 22.04'
+        self.ligada = False
+
+    def ligar(self):
+        self.ligada = True
+        print('✅', self.nome, 'LIGADA com sucesso!')
+        print('💻 Sistema:', self.so)
+        print('🧠 RAM:', self.ram, 'GB')
+        print('💾 Disco:', self.disco, 'GB')
+
+    def desligar(self):
+        self.ligada = False
+        print('🔌', self.nome, 'DESLIGADA')
+
+pc = MaquinaVirtual()
+pc.ligar()
+print('🎉 Tudo funcionando PERFEITAMENTE!')
+pc.desligar()
+          "
+          
